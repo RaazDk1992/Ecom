@@ -19,7 +19,6 @@ public class EcomConf  implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(resourceLocation);
     }
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -34,4 +33,5 @@ public class EcomConf  implements WebMvcConfigurer {
             }
         };
     }
+
 }

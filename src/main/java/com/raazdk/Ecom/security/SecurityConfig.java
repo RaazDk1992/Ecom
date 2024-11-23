@@ -49,20 +49,21 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
-                http.csrf(csrf-> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers("/api/auth/**")
-               );
+//                http.csrf(csrf-> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                .ignoringRequestMatchers("/api/auth/**")
+//               );
+        http.csrf(csrf->csrf.disable());
 
 
-        http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/getcsrf").permitAll()
-                .requestMatchers("/api/user/getuser").hasRole("ADMIN")
-                .requestMatchers("api/admin/addcategory").permitAll()
-                .anyRequest().authenticated())
-                .oauth2Login(o2->o2.successHandler(xsuccessHandler));
-        http.exceptionHandling(exception->exception.authenticationEntryPoint(authEntryPoint));
-        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.authorizeHttpRequests((requests) -> requests
+//                .requestMatchers("/api/auth/**").permitAll()
+//                .requestMatchers("/api/getcsrf").permitAll()
+//                .requestMatchers("/api/user/getuser").permitAll()
+//                .requestMatchers("api/admin/**").permitAll()
+//                .anyRequest().authenticated())
+//                .oauth2Login(o2->o2.successHandler(xsuccessHandler));
+//        http.exceptionHandling(exception->exception.authenticationEntryPoint(authEntryPoint));
+//        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         //http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
