@@ -1,0 +1,7 @@
+package com.raazdk.Ecom.repository;
+
+import com.raazdk.Ecom.models.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category,Long> {
+}
