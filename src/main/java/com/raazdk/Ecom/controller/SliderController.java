@@ -61,7 +61,7 @@ public class SliderController {
 
     @GetMapping("/getslide/{id}")
     public Slider getSlideByList(Long id){
-        return service.getSlideByList(id);
+        return service.getSlideByList(id).orElseThrow(()->new RuntimeException("Slide not found"));
     }
 
 
