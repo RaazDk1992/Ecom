@@ -10,6 +10,7 @@ import com.raazdk.Ecom.repository.UnitRepository;
 import com.raazdk.Ecom.security.jwt.AuthEntryPoint;
 import com.raazdk.Ecom.security.jwt.AuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.LocalDate;
 
@@ -46,39 +50,46 @@ public class SecurityConfig {
     @Lazy
     Oauth2SuccessHandler xsuccessHandler;
 
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
+
+    @Value("${front.end}")
+    private String fontEnd;
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
-//                http.csrf(csrf-> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                .ignoringRequestMatchers("/api/auth/**")
-//               );
-        http.csrf(csrf->csrf.disable());
+                http.cors(withDefaults())
+                        .csrf(csrf-> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .ignoringRequestMatchers("/api/auth/**")
+               );
+       // http.csrf(csrf->csrf.disable());
 
 
-//        http.authorizeHttpRequests((requests) -> requests
-//                .requestMatchers("/api/auth/**").permitAll()
-//                .requestMatchers("/api/getcsrf").permitAll()
-//                .requestMatchers("/api/user/getuser").permitAll()
-//                .requestMatchers("api/admin/**").permitAll()
-//                .anyRequest().authenticated())
-//                .oauth2Login(o2->o2.successHandler(xsuccessHandler));
-//        http.exceptionHandling(exception->exception.authenticationEntryPoint(authEntryPoint));
-//        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
+        http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/getcsrf").permitAll()
+                .requestMatchers("/api/user/getuser").hasRole("ADMIN")
+                .requestMatchers("api/admin/**").permitAll()
+                .anyRequest().authenticated())
+                .oauth2Login(o2->o2.successHandler(xsuccessHandler));
+        http.exceptionHandling(exception->exception.authenticationEntryPoint(authEntryPoint));
+        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.httpBasic(withDefaults());
         //http.formLogin(withDefaults());
-        http.csrf(csrf->csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/public/**").permitAll() // Public endpoints
-                        .requestMatchers("/api/admin/**").permitAll()
-                        .requestMatchers("/api/getcsrf").permitAll()
-                        .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/api/units/**").permitAll()
-                        .anyRequest().authenticated() // All other requests require authentication
-                )
-                .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless JWT
-                )
-                .addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class); // Add JWT filter
+//        http.csrf(csrf->csrf.disable())
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/api/public/**").permitAll() // Public endpoints
+//                        .requestMatchers("/api/admin/**").permitAll()
+//                        .requestMatchers("/api/getcsrf").permitAll()
+//                        .requestMatchers("/uploads/**").permitAll()
+//                        .requestMatchers("/api/units/**").permitAll()
+//                        .anyRequest().authenticated() // All other requests require authentication
+//                )
+//                .sessionManagement(sess -> sess
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless JWT
+//                )
+//                .addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
         return http.build();
     }
