@@ -85,8 +85,9 @@ public class EComUserServiceIml implements EcomUserService {
     }
 
     @Override
-    public EcomUser findByUsername(String username) {
-        return null;
+    public Optional<EcomUser> findByUsername(String username) {
+
+        return userRepository.findByUsername(username);
     }
 
     @Override
