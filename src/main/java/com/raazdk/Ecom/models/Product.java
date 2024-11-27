@@ -25,12 +25,12 @@ public class Product {
     Date manufactureDate;
     Date expiryDate;
     Boolean doesExpire;
-    int quantity;
+    int quantity;    // Min Quantity to order
     int price;
-    int minQuantity;
+    int minQuantity; //Min stock quantity
     double ratings;
     int totalRates;
-    int itemsInStock;
+    int itemsInStock; // Stock Quantity
 
 
     @ManyToOne(cascade = CascadeType.ALL)

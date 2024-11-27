@@ -22,7 +22,7 @@ public class Unit {
 
     @ToString.Exclude
     @Enumerated(EnumType.STRING)
-    private UnitsList unitname;
+    private UnitsList unitName;
 
     @OneToMany(mappedBy = "unit",fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
     @JsonBackReference
@@ -30,6 +30,6 @@ public class Unit {
     private Set<Product> products = new HashSet<>();
 
     public Unit(UnitsList unit){
-        this.unitname = unit;
+        this.unitName = unit;
     }
 }

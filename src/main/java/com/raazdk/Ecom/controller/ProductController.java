@@ -3,10 +3,13 @@ package com.raazdk.Ecom.controller;
 
 import com.raazdk.Ecom.models.Category;
 import com.raazdk.Ecom.models.Product;
+import com.raazdk.Ecom.models.Unit;
 import com.raazdk.Ecom.repository.CategoryRepository;
+import com.raazdk.Ecom.repository.UnitRepository;
 import com.raazdk.Ecom.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +42,8 @@ public class ProductController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-
+    @Autowired
+    UnitRepository unitRepository;
     //Path for storing uploads
     @Value("${file.upload-dir}")
     private  String UPLOAD_DIRECTORY ;
@@ -70,6 +74,8 @@ public class ProductController {
             @RequestParam("price") int price,
             @RequestParam("minQuantity") int minQuantity,
             @RequestParam("categoryId") Long categoryId,
+            @RequestParam("unit_id") Long unitId,
+            @RequestParam("itemsInStock") int itemsInStock,
             @RequestParam("imageFile") MultipartFile imageFile
 ) {
         //System.out.println("productName = " + productName);
@@ -87,13 +93,19 @@ public class ProductController {
 
            }
            product.setDoesExpire(doesExpire);
+           //This field is min order quantity
            product.setQuantity(quantity);
+           product.setItemsInStock(itemsInStock);
            product.setPrice(price);
            product.setRatings(Math.random()*5);
+           //This field is min stock field
            product.setMinQuantity(minQuantity);
            Category cat = categoryRepository.findById(categoryId)
                    .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category could not be found!!"));
            product.setCategory(cat);
+
+           Unit unit = unitRepository.findById(unitId).orElseThrow(()-> new RuntimeException("Unit not found!!"));
+           product.setUnit(unit);
             if(imageFile !=null && !imageFile.isEmpty()) {
 
                 String filePath = UPLOAD_DIRECTORY+"/"+ cat.getCategoryName() + "/" +currentInstant+ imageFile.getOriginalFilename();

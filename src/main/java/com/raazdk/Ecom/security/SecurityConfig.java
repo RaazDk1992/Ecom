@@ -3,11 +3,10 @@ package com.raazdk.Ecom.security;
 
 import com.raazdk.Ecom.configurations.EcomConf;
 import com.raazdk.Ecom.configurations.Oauth2SuccessHandler;
-import com.raazdk.Ecom.models.AppRole;
-import com.raazdk.Ecom.models.EcomUser;
-import com.raazdk.Ecom.models.Role;
+import com.raazdk.Ecom.models.*;
 import com.raazdk.Ecom.repository.EcomUserRepository;
 import com.raazdk.Ecom.repository.RoleRepository;
+import com.raazdk.Ecom.repository.UnitRepository;
 import com.raazdk.Ecom.security.jwt.AuthEntryPoint;
 import com.raazdk.Ecom.security.jwt.AuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +72,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").permitAll()
                         .requestMatchers("/api/getcsrf").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/api/units/**").permitAll()
                         .anyRequest().authenticated() // All other requests require authentication
                 )
                 .sessionManagement(sess -> sess
@@ -101,9 +101,22 @@ public class SecurityConfig {
 
     @Bean
     public CommandLineRunner initData(RoleRepository roleRepository,
-                                      EcomUserRepository userRepository
+                                      EcomUserRepository userRepository,
+                                      UnitRepository unitRepository
     ) {
         return args -> {
+
+            Unit unitLtr = unitRepository.findByUnitName(UnitsList.LITER)
+                    .orElseGet(() -> unitRepository.save(new Unit(UnitsList.LITER)));
+            Unit unitKg = unitRepository.findByUnitName(UnitsList.KG)
+                    .orElseGet(() -> unitRepository.save(new Unit(UnitsList.KG)));
+            Unit pc = unitRepository.findByUnitName(UnitsList.PIECE)
+                    .orElseGet(() -> unitRepository.save(new Unit(UnitsList.PIECE)));
+            Unit pair = unitRepository.findByUnitName(UnitsList.PAIR)
+                    .orElseGet(() -> unitRepository.save(new Unit(UnitsList.PAIR)));
+            Unit dozen = unitRepository.findByUnitName(UnitsList.DOZEN)
+                    .orElseGet(() -> unitRepository.save(new Unit(UnitsList.DOZEN)));
+
             Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
                     .orElseGet(() -> roleRepository.save(new Role(AppRole.ROLE_USER)));
 
