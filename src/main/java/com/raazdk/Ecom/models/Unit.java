@@ -1,6 +1,7 @@
 package com.raazdk.Ecom.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class Unit {
     private UnitsList unitName;
 
     @OneToMany(mappedBy = "unit",fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
-    @JsonBackReference
+    @JsonManagedReference("unit-product")
     @ToString.Exclude
     private Set<Product> products = new HashSet<>();
 

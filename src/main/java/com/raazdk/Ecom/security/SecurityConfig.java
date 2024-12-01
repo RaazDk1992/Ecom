@@ -69,7 +69,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/getcsrf").permitAll()
-                .requestMatchers("/api/user/getuser").hasRole("ADMIN")
+                .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/orders/**").hasAnyRole("ADMIN","USER")
+
+                .requestMatchers("/api/user/getuser").hasAnyRole("ADMIN","USER")
                 .requestMatchers("api/admin/**").permitAll()
                 .anyRequest().authenticated())
                 .oauth2Login(o2->o2.successHandler(xsuccessHandler));

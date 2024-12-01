@@ -1,7 +1,11 @@
 package com.raazdk.Ecom.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -17,20 +21,8 @@ public class Category {
     Long CategoryId;
     String CategoryName;
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("category-products")
+    private List<Product> products = new ArrayList<>();
 
-    @Entity
-    @NoArgsConstructor@AllArgsConstructor
-    @Data
-
-    public static class Product {
-        @Id @GeneratedValue(strategy = GenerationType.AUTO)
-        Long productId;
-        String productName;
-        int price;
-        int quantity;
-        @OneToOne(cascade = CascadeType.ALL)
-        @JoinColumn(name = "category_ref")
-        Category category;
-
-    }
 }

@@ -35,7 +35,7 @@ public class UserController {
 
             EcomUser user = service.findByUsername(details.getUsername()).orElseThrow(()->new UsernameNotFoundException("Provided username does not exist"));
 
-            System.out.println("User "+details.getUsername());
+
             List<String> roles  = details.getAuthorities().stream().map(item->item.getAuthority()).collect(Collectors.toList());
             UserInfoResponse response = new UserInfoResponse(
                     user.getUserId(),

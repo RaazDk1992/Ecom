@@ -2,6 +2,7 @@ package com.raazdk.Ecom.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
@@ -72,6 +74,11 @@ public class EcomUser {
 
     @UpdateTimestamp
     private LocalDateTime updatedDate;
+
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference("user")
+    private Set<EcomOrder> ecomOrders;
 
     public EcomUser(String userName, String email, String password) {
         this.username = userName;
